@@ -9,7 +9,7 @@ public class ServerBuilder implements Builder<Server> {
 	private int capacity;
 
 	public Server build() {
-		return new Server();
+		return new Server(capacity);
 	}
 
 	public ServerBuilder withCapacity(int capacity) {
