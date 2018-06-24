@@ -1,7 +1,6 @@
 package edu.iis.mto.serverloadbalancer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.Test;
 
@@ -77,12 +76,6 @@ public class ServerLoadBalancerTest {
 		balancing(aServerListWith(theServer), aVmsListWith(theVm));
 
 		assertThat("server should not contain the vm", !theServer.contains(theVm));
-	}
-
-	@Test
-	public void itCompiles() {
-		assertThat(true, equalTo(true));
-
 	}
 
 	private Vm[] aVmsListWith(Vm... vms) {
