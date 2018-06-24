@@ -32,6 +32,18 @@ public class ServerLoadBalancerTest {
 	@Test
 	public void balancingOneServerWithTenSlotsCapacity_andOneSlotVm_fillsTheServerWithTenPercent() {
 
+		Server theServer = a(ServerBuilder.server().withCapacity(10));
+		Vm theVm = a(VmBuilder.vm().ofSize(1));
+
+		balancing(aServerListWith(theServer), aVmsListWith(theVm));
+
+		assertThat(theServer, CurrentLoadPertcentageMatcher.hasCurrentLoadOf(10.0d));
+		assertThat("server should contain the vm", theServer.contains(theVm));
+	}
+
+	@Test
+	public void balancingOneServerWithEnoughRoom_fillsTheServerWithAllVms() {
+
 		Server theServer = a(ServerBuilder.server().withCapacity(100));
 		Vm theFirstVm = a(VmBuilder.vm().ofSize(1));
 		Vm theSecondVm = a(VmBuilder.vm().ofSize(1));
@@ -44,15 +56,27 @@ public class ServerLoadBalancerTest {
 	}
 
 	@Test
-	public void balancingOneServerWithEnoughRoom_fillsTheServerWithAllVms() {
+	public void vmsShouldBeBalancedOnLessLoadedServerFirst() {
 
-		Server theServer = a(ServerBuilder.server().withCapacity(10));
-		Vm theVm = a(VmBuilder.vm().ofSize(1));
+		Server moreLoadedServer = a(ServerBuilder.server().withCapacity(100).withCurrentLoadOf(50.0d));
+		Server lessLoadedServer = a(ServerBuilder.server().withCapacity(100).withCurrentLoadOf(45.0d));
+		Vm theVm = a(VmBuilder.vm().ofSize(10));
+
+		balancing(aServerListWith(moreLoadedServer, lessLoadedServer), aVmsListWith(theVm));
+
+		assertThat("less loaded server should contain the vm", lessLoadedServer.contains(theVm));
+		assertThat("more laoded server should not contain the vm", !moreLoadedServer.contains(theVm));
+	}
+
+	@Test
+	public void balancingServerWithNotEnoughRoom_shouldNotBeFilledWithTheVm() {
+
+		Server theServer = a(ServerBuilder.server().withCapacity(10).withCurrentLoadOf(90.0d));
+		Vm theVm = a(VmBuilder.vm().ofSize(10));
 
 		balancing(aServerListWith(theServer), aVmsListWith(theVm));
 
-		assertThat(theServer, CurrentLoadPertcentageMatcher.hasCurrentLoadOf(10.0d));
-		assertThat("server should contain the vm", theServer.contains(theVm));
+		assertThat("server should not contain the vm", !theServer.contains(theVm));
 	}
 
 	@Test
