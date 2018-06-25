@@ -96,7 +96,7 @@ public class ServerLoadBalancerTest {
 		assertThat("server2 should contain the vm2", server2.contains(vm2));
 		assertThat("server1 should contain the vm3", server1.contains(vm3));
 
-		assertThat(server1, hasCurrentLoadOf(70.0d));
+		assertThat(server1, hasCurrentLoadOf(75.0d));
 		assertThat(server2, hasCurrentLoadOf(66.66d));
 	}
 

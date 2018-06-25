@@ -29,7 +29,7 @@ public class ServerLoadBalancer {
 	private Server findLessLoadedServer(List<Server> capableServers) {
 		Server lessLoadedServer = null;
 		for (Server server : capableServers)
-			if (lessLoadedServer == null || server.currenLoadPercentage < lessLoadedServer.currenLoadPercentage)
+			if (lessLoadedServer == null || server.getCurrenLoadPercentage() < lessLoadedServer.getCurrenLoadPercentage())
 				lessLoadedServer = server;
 		return lessLoadedServer;
 	}
